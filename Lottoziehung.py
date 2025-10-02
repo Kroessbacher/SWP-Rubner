@@ -1,4 +1,17 @@
 import random
+"""Task: Program a lottery draw as a method
+
+Use random.getrand()
+The algorithm for drawing random numbers must be written so that no random number can be drawn twice.
+This means if you had to draw all 45 numbers, you would only be allowed to call the random number generator 45 times.
+Draw six numbers and display them on the screen.
+
+Task: Program lottery draw statistics as a method
+
+Perform 1000 draws.
+Create a dictionary for statistics that tracks how many times each number was drawn.
+Call the statistics method after each draw and increment the counter."""
+
 
 def main():
     try:
