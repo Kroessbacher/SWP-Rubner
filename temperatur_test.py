@@ -1,30 +1,20 @@
-def filterFehler (list):
-    filterdList = []
-    anzahl =0
-    for l in list:
-        if l ==None:
-            continue
-        if l >-60 and l < 60:
-            filterdList.append(l)
-            anzahl += 1
+def filter_errors(list):
+    filteredList = [l for l in list if l !=None and -60<l<60 ]
+    errors = len(list) - len(filteredList)
+    return filteredList,errors
 
-    return filterdList,anzahl
-
-def durchschnitt(list):
-    sum = 0
-    for l in list:
-        if l == None:
-            continue
-        sum += l
-    return sum/len(list)
+def avarage(list):
+    return sum(list)/len(list)
 
 def main():
     try:
         list = [-123,43,-4,5,None,12,14,15,None,69]
 
-        filtert, anzahl = filterFehler (list)
-        print(filtert)
-        avarage = durchschnitt(filtert)
+        filteredList,errors = filter_errors(list)
+        print(filteredList)
+        print(errors)
+
+        avg = avarage(filteredList)
         print(avarage)
     except:
        print("Fehler")
