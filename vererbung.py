@@ -24,7 +24,7 @@ class Child(Parent):
 
 
 def main():
-    child1 = Child("Anna", 10)
+    child1 = Child("Enes", 1)
 
     print(child1.name)
     print(child1.age)
