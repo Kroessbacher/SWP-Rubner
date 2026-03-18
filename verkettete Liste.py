@@ -1,3 +1,16 @@
+"""
+This Task should show how a LinkedList works and what functions it can have.
+It includes these functions:
+    add an object to the end
+    add an object after an object of your choice
+    delete an object without knowing the location
+    finding an object in the list
+    finding out if the object is in the list (bool)
+    get the first or last object
+    printing out the whole list
+    getting the count of objects
+"""
+
 class ListElement:
     def __init__(self, obj):
         self.obj = obj
