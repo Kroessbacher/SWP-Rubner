@@ -10,6 +10,7 @@ It includes these functions:
     printing out the whole list
     getting the count of objects
 """
+import random
 
 class ListElement:
     def __init__(self, obj):
@@ -25,11 +26,13 @@ class ListElement:
     def getObj(self):
         return self.obj
 
+
 class EinfachVerketteteListe:
     def __init__(self):
         self.startElem = ListElement("Kopf")
-        self.count =0
+        self.count = 0
 
+    # --- Vorhandene Methoden ---
     def getFirstElem(self):
         return self.startElem
 
@@ -37,7 +40,7 @@ class EinfachVerketteteListe:
         newElem = ListElement(obj)
         lastElem = self.getLastElem()
         lastElem.setNextElem(newElem)
-        self.count +=1
+        self.count += 1
 
     def getLastElem(self):
         le = self.startElem
@@ -46,32 +49,31 @@ class EinfachVerketteteListe:
         return le
 
     def insertAfter(self, prevItem, newItem):
+        # Nutze '==' für Wertvergleiche bei Strings/Zahlen
         pointerElem = self.startElem.getNextElem()
-        while pointerElem is not None and pointerElem.getObj() is not prevItem:
+        while pointerElem is not None and pointerElem.getObj() != prevItem:
             pointerElem = pointerElem.getNextElem()
 
-        newElem = ListElement(newItem)
-        nextElem = pointerElem.getNextElem()
-        pointerElem.setNextElem(newElem)
-        newElem.setNextElem(nextElem)
-        self.count +=1
+        if pointerElem:
+            newElem = ListElement(newItem)
+            nextElem = pointerElem.getNextElem()
+            pointerElem.setNextElem(newElem)
+            newElem.setNextElem(nextElem)
+            self.count += 1
 
     def delete(self, obj):
         le = self.startElem
-        while le.getNextElem() is not None and le.getObj() is not obj:
-            if le.getNextElem().getObj() is obj:
-                if le.getNextElem().getNextElem() is not None:
-                    le.setNextElem(le.getNextElem().getNextElem())
-                else:
-                    le.setNextElem(None)
-                self.count -=1
-                break
+        while le.getNextElem() is not None:
+            if le.getNextElem().getObj() == obj:
+                le.setNextElem(le.getNextElem().getNextElem())
+                self.count -= 1
+                return  # Beenden nach dem Löschen
             le = le.getNextElem()
 
     def bool_find(self, obj):
         le = self.startElem
         while le is not None:
-            if le.getObj() is obj:
+            if le.getObj() == obj:
                 return True
             le = le.getNextElem()
         return False
@@ -79,7 +81,7 @@ class EinfachVerketteteListe:
     def find(self, obj):
         le = self.startElem
         while le is not None:
-            if le.getObj() is obj:
+            if le.getObj() == obj:
                 return le
             le = le.getNextElem()
         return None
@@ -93,27 +95,51 @@ class EinfachVerketteteListe:
     def getLength(self):
         return self.count
 
-def main():
-    list = EinfachVerketteteListe()
-    list.addLast("1")
-    list.addLast("2")
-    list.addLast("3")
-    list.addLast("4")
-    list.addLast("5")
-    list.insertAfter("2","neu")
-    list.writeList()
-    list.delete("3")
-    list.writeList()
+    # --- NEU: Iterator Protokoll ---
+    def __iter__(self):
+        # Wir starten beim ersten Element NACH dem Kopf
+        self._currentIter = self.startElem.getNextElem()
+        return self
 
-    print("count of elements:", list.getLength())
-    print("erstes Element: "+ list.getFirstElem().getObj())
-    print("ist '3' enthalten?" + str(list.bool_find("3")))
-    print("ist '5' enthalten?" + str(list.bool_find("5")))
-    print("ist '5' enthalten?" + list.find("5").getObj())
-    print("letztes Element: " + list.getLastElem().getObj())
+    def __next__(self):
+        if self._currentIter is not None:
+            data = self._currentIter.getObj()
+            self._currentIter = self._currentIter.getNextElem()
+            return data
+        else:
+            raise StopIteration
+
+
+def main():
+    my_list = EinfachVerketteteListe()
+
+    # 1. Befüllen mit Zufallszahlen (Ganzzahl-werte)
+    print("Befülle Liste mit 5 Zufallszahlen:")
+    for _ in range(5):
+        zufallszahl = random.randint(1, 100)
+        my_list.addLast(zufallszahl)
+
+    # 2. Test der restlichen Funktionen
+    my_list.addLast("TestObjekt")
+    my_list.insertAfter("TestObjekt", "Nachfolger")
+
+    print("\nAktuelle Liste:")
+    my_list.writeList()
+
+    # 3. Test Iterator
+    print("\nAusgabe über Iterator-Schleife:")
+    for item in my_list:
+        print(f"Iterator-Item: {item}")
+
+    print("\nStats & Suche:")
+    print(f"Anzahl Elemente: {my_list.getLength()}")
+    print(f"Erstes Element (Kopf): {my_list.getFirstElem().getObj()}")
+    print(f"Ist 'TestObjekt' enthalten? {my_list.bool_find('TestObjekt')}")
+
+    my_list.delete("TestObjekt")
+    print(f"Nach Löschen - Ist 'TestObjekt' enthalten? {my_list.bool_find('TestObjekt')}")
+    print(f"Letztes Element: {my_list.getLastElem().getObj()}")
+
 
 if __name__ == "__main__":
-    try:
-        main()
-    except:
-        print("fehler")
+    main()
